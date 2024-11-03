@@ -11,48 +11,56 @@
  */
 class Solution {
 public:
-    struct TreeNode* findLastRight(struct TreeNode* root) {
-        while(root->right != NULL) {
-            root = root->right;
+    TreeNode* findLastRight(TreeNode* root) {
+        if(root->right == NULL) {
+            return root;
         }
-        return root;
+        return findLastRight(root->right);
+    }
+
+    TreeNode* helper(TreeNode* root) {//root is 3 node to be deleted
+        if(root->left == NULL) return root->right;//agr left wala nhi h toh
+        else if(root->right == NULL) return root->left;
+        TreeNode* rightChild = root->right;
+        TreeNode* lastRight = findLastRight(root->left);
+        lastRight->right = rightChild;
+        return root->left;//mtlb 3 ka left
     }
 
     TreeNode* deleteNode(TreeNode* root, int key) {
         if(root == NULL) {
+            //if root only does not exist then how will key exist
             return NULL;
         }
-        if(key < root->val) {
-            root->left = deleteNode(root->left, key);
+        if(root->val == key) {
+            return helper(root);
         }
-        else if(key > root->val) {
-            root->right = deleteNode(root->right, key);
+        //dummy will store the address of the root which after modifying will be returned
+        TreeNode* dummy = root;
+        while(root != NULL) {
+            if(root->val > key) {
+                if(root->left != NULL && root->left->val == key) {
+                    //we need to delete it
+                    //root->left means 5 ka left me 2 join hona chahiye
+                    root->left  = helper(root->left);//helper(3)-->node to be deleted          
+                    break;
+                }
+                else {
+                    //if key is not found
+                    root = root->left;
+                }
+            }
+            //similarly if node to be deleted is at right
+            else {
+                if(root->right != NULL && root->right->val == key) {
+                    root->right = helper(root->right);
+                    break;
+                }
+                else {
+                    root = root->right;
+                }
+            } 
         }
-        else if(key == root->val) {
-            //has no children
-            if(root->left == NULL && root->right == NULL) {
-                delete(root);
-                return NULL;
-            }
-            else if(root->left == NULL) {
-                struct TreeNode* temp = root->right;
-                delete(root);
-                return temp;//we are returning it to the recursive call so  stating that the new left is ....
-            }
-            else if(root->right == NULL) {
-                struct TreeNode* temp = root->left;
-                delete(root);
-                return temp;
-            }
-            else {//agr left aur right dono me value h
-                //we have to connect the right part of the key to the bottom rightmost part of the left subtree of the key
-                struct TreeNode* lastRtOfLeftSubtree = findLastRight(root->left);
-                lastRtOfLeftSubtree->right = root->right;
-                struct TreeNode* temp = root->left;
-                delete(root);
-                return temp;
-            }
-        }
-        return root;
+        return dummy;
     }
 };
