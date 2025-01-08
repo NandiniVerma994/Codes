@@ -17,7 +17,6 @@ public:
             for(int j=0; j<n; j++) {
                 if(isConnected[i][j] == 1 && i != j) {
                     adjLs[i].push_back(j);
-                    adjLs[j].push_back(i);
                 }
             }
         }
