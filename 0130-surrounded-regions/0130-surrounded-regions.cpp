@@ -1,56 +1,46 @@
 class Solution {
 public:
-    void dfs(int row, int col, vector<vector<int>> &vis, vector<vector<char>> &board, int delrow[], int delcol[]) {
+    void dfs(int row, int col, int n, int m, vector<vector<int>> &vis, vector<vector<char>> &board) {
         vis[row][col] = 1;
-        int n = board.size();
-        int m = board[0].size();
+        int delrow[] = {-1,0,1,0};
+        int delcol[] = {0,1,0,-1};
         for(int i=0; i<4; i++) {
             int nrow = row + delrow[i];
             int ncol = col + delcol[i];
-            if(nrow >= 0 && nrow < n && ncol >= 0 && ncol < m && !vis[nrow][ncol] && board[nrow][ncol] == 'O') {
-                dfs(nrow, ncol, vis, board, delrow, delcol);
+            if(nrow >= 0 && nrow < n && ncol >= 0 && ncol < m && vis[nrow][ncol] == 0 && board[nrow][ncol] == 'O') {
+                dfs(nrow, ncol, n, m, vis, board);
             }
         }
     }
-
+    //STeps involved
+    //Mark all the boundary first as O and do a dfs traversal in all four directions so that anyone having boundary as O is not converted to x
     void solve(vector<vector<char>>& board) {
         int n = board.size();
         int m = board[0].size();
-        int delrow[] = {-1,0,+1,0};
-        int delcol[] = {0,1,0,-1};
         vector<vector<int>> vis(n, vector<int>(m,0));
-        //marking boundaries as visited if it contains big O's 
-        //marking boundary rows
         for(int j=0; j<m; j++) {
-            //marking first row
-            if(!vis[0][j] && board[0][j] == 'O') {
-                //mark its corresponding neigbours
-                dfs(0, j, vis, board, delrow, delcol);
+            if(vis[0][j] == 0 && board[0][j] == 'O') {
+                dfs(0, j, n, m, vis, board);
             }
-            //marking last row
-            if(!vis[n-1][j] && board[n-1][j] == 'O') {
-                dfs(n-1, j, vis, board, delrow, delcol);
+            if(vis[n-1][j] == 0 && board[n-1][j] == 'O') {
+                dfs(n-1, j, n, m, vis, board);
             }
         }
-        //marking boundary cols
+
         for(int i=0; i<n; i++) {
-            //marking first col
-            if(!vis[i][0] && board[i][0] == 'O') {
-                dfs(i, 0, vis, board, delrow, delcol);
+            if(vis[i][0] == 0 && board[i][0] == 'O') {
+                dfs(i, 0, n, m, vis, board);
             }
-            //marking last col
-            if(!vis[i][m-1] && board[i][m-1] == 'O') {
-                dfs(i, m-1, vis, board, delrow, delcol);
+            if(vis[i][m-1] == 0 && board[i][m-1] == 'O') {
+                dfs(i, m-1, n, m, vis, board);
             }
         }
-        //now again traverse through the whole board to check if any where O comes then mark it as X bcz boundary ones(along with its neighbours) are already marked that they cant be converted to X
         for(int i=0; i<n; i++) {
             for(int j=0; j<m; j++) {
-                if(board[i][j] == 'O' && !vis[i][j]) {
+                if(board[i][j] == 'O' && vis[i][j] == 0) {
                     board[i][j] = 'X';
                 }
             }
         }
-        //no returning board as the return type is void so need to make changes in the given matrix only
     }
 };
