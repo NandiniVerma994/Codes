@@ -16,15 +16,15 @@ public:
                 cnt--;
             }
         }
-        int cnt2 = 0;
-        for(int i=0; i<n; i++) {
-            if(nums[i] == element) {
-                cnt2++;
-            }
-        }
-        if(cnt2 = n/2) {
-            return element;
-        }
+        // int cnt2 = 0;
+        // for(int i=0; i<n; i++) {
+        //     if(nums[i] == element) {
+        //         cnt2++;
+        //     }
+        // }
+        // if(cnt2 = n/2) {
+        //     return element;
+        // }
         return element;
     }
 };
