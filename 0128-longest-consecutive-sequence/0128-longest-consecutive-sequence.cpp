@@ -26,6 +26,7 @@ public:
         // }
         // return longest;
         int n = nums.size();
+        if(n == 0) return 0;
         int lastSmaller = INT_MIN;
         int longest = 1;
         int cnt = 0;
